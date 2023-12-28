@@ -11,10 +11,10 @@
     ],
     "repository": {
         "type": "git",
-        "url": "https://github.com/mantvmass/socket.io-prometheus-metrics.git"
+        "url": "https://github.com/mantvmass/socket.io-prom-metrics.git"
     },
     "bugs": {
-        "url": "https://github.com/mantvmass/socket.io-prometheus-metrics/issues"
+        "url": "https://github.com/mantvmass/socket.io-prom-metrics/issues"
     },
     "main": "./dist/index.js",
     "typings": "./dist/index.d.ts",
