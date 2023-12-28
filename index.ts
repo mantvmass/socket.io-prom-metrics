@@ -143,7 +143,7 @@ export class SocketIOMetrics {
         };
     }
 
-    private bindMetricsOnEmitter(server: NodeJS.EventEmitter, labels: prom.labelValues) {
+    private bindMetricsOnEmitter(server: NodeJS.EventEmitter, labels: prom.LabelValues<string>) {
         const blacklisted_events = new Set([
             'error',
             'connect',
@@ -207,13 +207,13 @@ export class SocketIOMetrics {
     }
 
     private bindMetrics() {
-        Object.keys(this.ioServer.nsps).forEach((nsp) =>
+        Object.keys(this.ioServer._nsps).forEach((nsp) =>
             this.bindNamespaceMetrics(this.ioServer, nsp)
         );
 
         if (this.options.checkForNewNamespaces) {
             setInterval(() => {
-                Object.keys(this.ioServer.nsps).forEach((nsp) =>
+                Object.keys(this.ioServer._nsps).forEach((nsp) =>
                     this.bindNamespaceMetrics(this.ioServer, nsp)
                 );
             }, 2000);
