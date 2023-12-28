@@ -2,7 +2,7 @@
   "name": "socket.io-prometheus-metrics",
   "version": "1.0.6",
   "description": "Prometheus metrics for socket.io",
-  "author": "Jonas Tranberg <jonas.tranberg@uniwise.dk>",
+  "author": "Jonas Tranberg <jonas.tranberg@uniwise.dk>, mantvmass (rebuild)",
   "license": "Apache-2.0",
   "keywords": [
     "prometheus",
@@ -28,6 +28,7 @@
     "socket.io": "^4.7.2"
   },
   "devDependencies": {
+    "@types/node": "^20.10.5",
     "@types/express": "^4.17.21",
     "typescript": "^5.3.3"
   }
