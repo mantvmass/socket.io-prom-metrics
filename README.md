@@ -1,13 +1,11 @@
-# socket.io-prometheus-metrics
+# socket.io-prom-metrics
 
 Exposes a metrics endpoint for prometheus to collect data about [`socket.io`](https://github.com/socketio/socket.io).
 
 ## Installation
 
 ```bash
-npm install socket.io-prometheus-metrics
-# or
-yarn add socket.io-prometheus-metrics
+npm install socket.io-prom-metrics
 ```
 
 ## Usage
