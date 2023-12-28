@@ -1,5 +1,5 @@
 import * as http from 'http';
-import * as express from 'express';
+import express from 'express';
 import * as io from 'socket.io';
 import * as prom from 'prom-client';
 
@@ -28,11 +28,11 @@ export interface IMetrics {
 
 export class SocketIOMetrics {
     public register: prom.Registry;
-    public metrics: IMetrics;
+    public metrics: IMetrics | null;
 
     private ioServer: io.Server;
-    private express: express.Express;
-    private expressServer: http.Server;
+    private express: express.Express | null;
+    private expressServer: http.Server | null;
 
     private options: IMetricsOptions;
 
@@ -47,10 +47,14 @@ export class SocketIOMetrics {
     };
 
     constructor(ioServer: io.Server, options?: IMetricsOptions) {
+
         this.options = { ...this.defaultOptions, ...options };
         this.ioServer = ioServer;
         this.register = prom.register;
 
+        this.metrics = null
+        this.express = null
+        this.expressServer = null
         this.initMetrics();
         this.bindMetrics();
 
@@ -76,16 +80,20 @@ export class SocketIOMetrics {
     }
 
     public async close() {
-        return this.expressServer.close();
+        return this.expressServer?.close();
     }
 
     private initServer() {
-        this.express = express();
-        this.expressServer = this.express.listen(this.options.port);
-        this.express.get(this.options.path, (req: express.Request, res: express.Response) => {
-            res.set('Content-Type', this.register.contentType);
-            res.end(this.register.metrics());
-        });
+        if (!this.express) {
+            this.express = express();
+            this.expressServer = this.express.listen(this.options.port);
+
+            // this.express.get(this.options.path ? this.options.path : "/metrics", (req: express.Request, res: express.Response) => { // temp
+            this.express.get(this.options.path ? this.options.path : "/metrics", (res: express.Response) => {
+                res.set('Content-Type', this.register.contentType);
+                res.end(this.register.metrics());
+            });
+        }
     }
 
     /*
@@ -155,13 +163,17 @@ export class SocketIOMetrics {
 
         server.on('connect', (socket: any) => {
             // Connect events
-            this.metrics.connectTotal.inc(labels);
-            this.metrics.connectedSockets.set((this.ioServer.engine as any).clientsCount);
+            if (this.metrics) {
+                this.metrics.connectTotal.inc(labels);
+                this.metrics.connectedSockets.set((this.ioServer.engine as any).clientsCount);
+            }
 
             // Disconnect events
             socket.on('disconnect', () => {
-                this.metrics.disconnectTotal.inc(labels);
-                this.metrics.connectedSockets.set((this.ioServer.engine as any).clientsCount);
+                if (this.metrics) {
+                    this.metrics.disconnectTotal.inc(labels);
+                    this.metrics.connectedSockets.set((this.ioServer.engine as any).clientsCount);
+                }
             });
 
             // Hook into emit (outgoing event)
@@ -169,8 +181,10 @@ export class SocketIOMetrics {
             socket.emit = (event: string, ...data: any[]) => {
                 if (!blacklisted_events.has(event)) {
                     let labelsWithEvent = { event: event, ...labels };
-                    this.metrics.bytesTransmitted.inc(labelsWithEvent, this.dataToBytes(data));
-                    this.metrics.eventsSentTotal.inc(labelsWithEvent);
+                    if (this.metrics) {
+                        this.metrics.bytesTransmitted.inc(labelsWithEvent, this.dataToBytes(data));
+                        this.metrics.eventsSentTotal.inc(labelsWithEvent);
+                    }
                 }
 
                 return org_emit.apply(socket, [event, ...data]);
@@ -183,12 +197,16 @@ export class SocketIOMetrics {
                     const [event, data] = packet.data;
 
                     if (event === 'error') {
-                        this.metrics.connectedSockets.set((this.ioServer.engine as any).clientsCount);
-                        this.metrics.errorsTotal.inc(labels);
+                        if (this.metrics) {
+                            this.metrics.connectedSockets.set((this.ioServer.engine as any).clientsCount);
+                            this.metrics.errorsTotal.inc(labels);
+                        }
                     } else if (!blacklisted_events.has(event)) {
                         let labelsWithEvent = { event: event, ...labels };
-                        this.metrics.bytesReceived.inc(labelsWithEvent, this.dataToBytes(data));
-                        this.metrics.eventsReceivedTotal.inc(labelsWithEvent);
+                        if (this.metrics) {
+                            this.metrics.bytesReceived.inc(labelsWithEvent, this.dataToBytes(data));
+                            this.metrics.eventsReceivedTotal.inc(labelsWithEvent);
+                        }
                     }
                 }
 

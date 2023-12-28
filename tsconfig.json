@@ -1,14 +1,36 @@
 {
     "compilerOptions": {
-        "noImplicitAny": true,
-        "removeComments": true,
-        "preserveConstEnums": true,
-        "declaration": true,
         "module": "commonjs",
-        "target": "es2015",
-        "outDir": "./dist"
+        "esModuleInterop": true,
+        "target": "es2017",
+        "noImplicitAny": true,
+        "noImplicitThis": true,
+        "alwaysStrict": true,
+        "strictNullChecks": true,
+        "strictFunctionTypes": true,
+        "strictPropertyInitialization": true,
+        "forceConsistentCasingInFileNames": true,
+        "noImplicitReturns": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
+        "listEmittedFiles": true,
+        "listFiles": false,
+        "noEmitOnError": true,
+        "moduleResolution": "node",
+        "sourceMap": true,
+        "declaration": true,
+        "outDir": "dist",
+        "baseUrl": ".",
+        "paths": {
+            "*": [
+                "node_modules/*",
+                "src/types/*"
+            ]
+        }
     },
-    "files": [
-        "index.ts"
+    "include": [
+        "src/**/*"
     ]
 }
