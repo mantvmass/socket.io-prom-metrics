@@ -19,7 +19,7 @@
     "main": "./dist/index.js",
     "typings": "./dist/index.d.ts",
     "scripts": {
-        "build": "tsc",
+        "build": "tsc index.ts",
         "clean": "rm *.log ./dist ./node_modules -rf"
     },
     "dependencies": {
