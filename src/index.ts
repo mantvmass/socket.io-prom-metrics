@@ -1,5 +1,5 @@
 import * as http from 'http';
-import express, { Request, Response } from 'express';
+import express, { Response } from 'express';
 import * as io from 'socket.io';
 import * as prom from 'prom-client';
 
@@ -88,7 +88,7 @@ export class SocketIOMetrics {
             this.express = express();
             this.expressServer = this.express.listen(this.options.port);
 
-            this.express.get(this.options.path ? this.options.path : "/metrics", (req: Request, res: Response) => {
+            this.express.get(this.options.path ? this.options.path : "/metrics", (res: Response) => {
                 res.set('Content-Type', this.register.contentType);
                 res.end(this.register.metrics());
             });
