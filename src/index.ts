@@ -90,7 +90,6 @@ export class SocketIOMetrics {
 
             this.express.get(this.options.path ? this.options.path : "/metrics", (req: Request, res: Response) => {
                 res.set('Content-Type', this.register.contentType);
-                req.headers['content-type']
                 res.end(this.register.metrics());
             });
         }
