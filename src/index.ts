@@ -1,5 +1,5 @@
 import * as http from 'http';
-import express, { Response } from 'express';
+import express, { Request, Response } from 'express';
 import * as io from 'socket.io';
 import * as prom from 'prom-client';
 
@@ -84,15 +84,16 @@ export class SocketIOMetrics {
     }
 
     private initServer() {
-        if (!this.express) {
-            this.express = express();
-            this.expressServer = this.express.listen(this.options.port);
 
-            this.express.get(this.options.path ? this.options.path : "/metrics", (res: Response) => {
-                res.set('Content-Type', this.register.contentType);
-                res.end(this.register.metrics());
-            });
-        }
+        this.express = express();
+        this.expressServer = this.express.listen(this.options.port);
+
+        this.express.get(this.options.path ? this.options.path : "/metrics", async (req: Request, res: Response) => {
+            req.url
+            res.set("Content-Type", this.register.contentType);
+            await res.send(await this.register.metrics());
+        });
+        
     }
 
     /*
@@ -224,9 +225,10 @@ export class SocketIOMetrics {
     }
 
     private bindMetrics() {
-        Object.keys(this.ioServer._nsps).forEach((nsp) =>
+        // console.log(this.ioServer._nsps.keys())
+        Array.from(this.ioServer._nsps.keys()).forEach((nsp) => {
             this.bindNamespaceMetrics(this.ioServer, nsp)
-        );
+        });
 
         if (this.options.checkForNewNamespaces) {
             setInterval(() => {

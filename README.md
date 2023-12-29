@@ -13,25 +13,35 @@ npm install socket.io-prom-metrics
 Basic usage
 
 ```ts
-import * as http from 'http';
-import * as io from 'socket.io';
-import * as prometheus from 'socket.io-prometheus-metrics';
+// server.ts
 
-const server = http.createServer();
-const io = io(server);
+import { createServer } from "http";
+import { Server, Socket } from "socket.io";
+import * as prometheus from "../src";
 
+
+const server = createServer();
+const io = new Server(server);
+
+
+io.on("connection", (socket: Socket) => {
+    console.log(`${socket.id} is connected.`)
+    // Add event here
+});
+
+
+io.of("/custom-namespace").on("connection", (socket: Socket) => {
+    console.log(`${socket.id} is connected.`)
+    // Add event here
+});
+
+
+// init prometheus
 prometheus.metrics(io);
 
+
+// start server
 server.listen(3000);
-```
-Metrics is then available at `localhost:9090/metrics`.
-
-Prometheus default metrics can also be enabled by setting the `collectDefaultMetrics` option to `true`
-
-```ts
-prometheus.metrics(io, {
-    collectDefaultMetrics: true
-});
 ```
 
 If you wish to serve the metrics yourself the `createServer` options can be set to `false` and metrics can be collected from the register
