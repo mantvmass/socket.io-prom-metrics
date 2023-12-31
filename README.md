@@ -17,7 +17,7 @@ Basic usage
 
 import { createServer } from "http";
 import { Server, Socket } from "socket.io";
-import * as prometheus from "../src";
+import * as prometheus from "socket.io-prom-metrics";
 
 
 const server = createServer();
@@ -37,7 +37,7 @@ io.of("/custom-namespace").on("connection", (socket: Socket) => {
 
 
 // init prometheus
-prometheus.metrics(io);
+prometheus.metrics(io); // running on port 9090 (default port) | http://localhost:9090/metrics
 
 
 // start server
