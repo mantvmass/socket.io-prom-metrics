@@ -20,8 +20,11 @@ io.of("/custom-namespace").on("connection", (socket: Socket) => {
 
 
 // init prometheus
-prometheus.metrics(io);
+prometheus.metrics(io); // running on port 9090 (default port) | http://localhost:9090/metrics
 
 
 // start server
-server.listen(3000);
+server.listen(3000, () => {
+    console.log("prometheus running on port 9090 : http://localhost:9090/metrics");
+    console.log("server running on port 3000")
+});
