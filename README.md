@@ -41,7 +41,10 @@ prometheus.metrics(io); // running on port 9090 (default port) | http://localhos
 
 
 // start server
-server.listen(3000);
+server.listen(3000, () => {
+    console.log("prometheus running on port 9090 : http://localhost:9090/metrics");
+    console.log("server running on port 3000")
+});
 ```
 
 If you wish to serve the metrics yourself the `createServer` options can be set to `false` and metrics can be collected from the register
