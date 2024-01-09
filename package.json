@@ -1,6 +1,6 @@
 {
     "name": "socket.io-prom-metrics",
-    "version": "1.0.12",
+    "version": "1.0.13",
     "description": "Prometheus metrics for socket.io",
     "author": "Jonas Tranberg <jonas.tranberg@uniwise.dk>, Phumin Maliwan (mantvmass: rebuild)",
     "license": "Apache-2.0",
