@@ -225,14 +225,13 @@ export class SocketIOMetrics {
     }
 
     private bindMetrics() {
-        // console.log(this.ioServer._nsps.keys())
         Array.from(this.ioServer._nsps.keys()).forEach((nsp) => {
             this.bindNamespaceMetrics(this.ioServer, nsp)
         });
 
         if (this.options.checkForNewNamespaces) {
             setInterval(() => {
-                Object.keys(this.ioServer._nsps).forEach((nsp) =>
+                Array.from(this.ioServer._nsps.keys()).forEach((nsp) =>
                     this.bindNamespaceMetrics(this.ioServer, nsp)
                 );
             }, 2000);
